@@ -11,6 +11,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 public class Group {
-    private List<Set<Integer>> parts;
+    private List<Set<String>> parts;
     private List<String> lines;
 }

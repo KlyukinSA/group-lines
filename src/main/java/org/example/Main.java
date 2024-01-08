@@ -14,10 +14,10 @@ public class Main {
             String line = reader.readLine();
             while (line != null) {
                 String[] rows = line.split(";");
-                List<Integer> ints = new ArrayList<>();
+                List<String> ints = new ArrayList<>();
                 for (String row : rows) {
                     try {
-                        ints.add(Integer.parseInt(row.replaceAll("\"", "")));
+                        ints.add(row.replaceAll("\"", ""));
                     }
                     catch (NumberFormatException exception) {
                         ints.add(null);
@@ -28,11 +28,11 @@ public class Main {
                     if (belongs) {
                         break;
                     }
-                    List<Set<Integer>> parts = group.getParts();
+                    List<Set<String>> parts = group.getParts();
                     for (int i = 0; i < Math.min(parts.size(), rows.length); i++) {
-                        Set<Integer> possibleRowValues = parts.get(i);
-                        Integer number = ints.get(i);
-                        if (possibleRowValues.contains(number)) {
+                        Set<String> possibleRowValues = parts.get(i);
+                        String value = ints.get(i);
+                        if (possibleRowValues.contains(value)) {
                             group.getLines().add(line);
                             apply(ints, parts);
                             belongs = true;
@@ -40,8 +40,8 @@ public class Main {
                         }
                     }
                 }
-                if (!belongs && ints.stream().anyMatch(Objects::nonNull)) {
-                    List<Set<Integer>> parts = new ArrayList<>();
+                if (!belongs && ints.stream().anyMatch(s -> !s.isEmpty())) {
+                    List<Set<String>> parts = new ArrayList<>();
                     apply(ints, parts);
                     groups.add(Group.builder()
                             .lines(new ArrayList<>(Arrays.asList(line)))
@@ -62,9 +62,12 @@ public class Main {
         }
     }
 
-    private static void apply(List<Integer> newValues, List<Set<Integer>> possible) {
+    private static void apply(List<String> newValues, List<Set<String>> possible) {
         int j = 0;
         for (; j < possible.size(); j++) {
+            if (j >= newValues.size()) {
+                return;
+            }
             possible.get(j).add(newValues.get(j));
         }
         for (; j < newValues.size(); j++) {
