@@ -15,50 +15,53 @@ public class Main {
 
             String line = reader.readLine();
             while (line != null) {
-                String[] rows = line.split(";");
-                for (int i = 0; i < rows.length; i++) {
-                    rows[i] = rows[i].replaceAll("\"", "");
-                }
+                String[] columns = getColumnsOf(line);
                 Integer groupNumber = null;
-                for (int i = 0; i < Math.min(parts.size(), rows.length); i++) {
-                    String value = rows[i];
-                    if (!value.isEmpty()) {
-                        Integer groupNumber2 = parts.get(i).get(value);
-                        if (groupNumber != null && groupNumber2 != null && !groupNumber2.equals(groupNumber)) {
-                            for (String val : groups.get(groupNumber2)) {
-                                groups.get(groupNumber).add(val);
-                            }
-                        }
+                for (int i = 0; i < Math.min(parts.size(), columns.length); i++) {
+                    Integer groupNumber2 = parts.get(i).get(columns[i]);
+                    if (groupNumber2 != null) {
                         if (groupNumber == null) {
                             groupNumber = groupNumber2;
+                        } else if (!Objects.equals(groupNumber, groupNumber2)) {
+                            for (String line2 : groups.get(groupNumber2)) {
+                                groups.get(groupNumber).add(line2);
+                                apply(getColumnsOf(line2), groupNumber, parts);
+                            }
+                            groups.set(groupNumber2, new ArrayList<>());
                         }
                     }
                 }
                 if (groupNumber == null) {
-                    if (Arrays.stream(rows).anyMatch(s -> !s.isEmpty())) {
+                    if (Arrays.stream(columns).anyMatch(s -> !s.isEmpty())) {
                         groups.add(new ArrayList<>(List.of(line)));
-                        apply(rows, groups.size() - 1, parts);
+                        apply(columns, groups.size() - 1, parts);
                     }
                 } else {
                     groups.get(groupNumber).add(line);
-                    apply(rows, groupNumber, parts);
+                    apply(columns, groupNumber, parts);
                 }
                 line = reader.readLine();
             }
             reader.close();
 
-            System.out.println("--------------");
-            int count = 0;
+            System.out.println(groups.stream().filter(g -> g.size() > 1).count());
+//            groups.sort(Comparator.comparingInt(List::size));
             for (List<String> group : groups) {
                 if (group.size() > 1) {
-                    count++;
                     System.out.println(group);
                 }
             }
-            System.out.println(count);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String[] getColumnsOf(String line) {
+        String[] rows = line.split(";");
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = rows[i].replaceAll("\"", "");
+        }
+        return rows;
     }
 
     private static void apply(String[] newValues, int groupNumber, List<Map<String, Integer>> parts) {
