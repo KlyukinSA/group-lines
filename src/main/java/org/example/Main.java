@@ -57,6 +57,11 @@ public class Main {
     }
 
     private static String[] getColumnsOf(String line) {
+        for (int i = 1; i < line.length() - 1; i++) {
+            if (line.charAt(i) == '"' && line.charAt(i - 1) != ';' && line.charAt(i + 1) != ';') {
+                return new String[0];
+            }
+        }
         String[] rows = line.split(";");
         for (int i = 0; i < rows.length; i++) {
             rows[i] = rows[i].replaceAll("\"", "");
