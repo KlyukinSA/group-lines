@@ -10,7 +10,7 @@ public class Main {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(args[0]));
-            List<List<String>> groups = new ArrayList<>();
+            List<Set<String>> groups = new ArrayList<>();
             List<Map<String, Integer>> parts = new ArrayList<>();
 
             String line = reader.readLine();
@@ -27,13 +27,13 @@ public class Main {
                                 groups.get(groupNumber).add(line2);
                                 apply(getColumnsOf(line2), groupNumber, parts);
                             }
-                            groups.set(groupNumber2, new ArrayList<>());
+                            groups.set(groupNumber2, new HashSet<>());
                         }
                     }
                 }
                 if (groupNumber == null) {
                     if (Arrays.stream(columns).anyMatch(s -> !s.isEmpty())) {
-                        groups.add(new ArrayList<>(List.of(line)));
+                        groups.add(new HashSet<>(List.of(line)));
                         apply(columns, groups.size() - 1, parts);
                     }
                 } else {
@@ -46,7 +46,7 @@ public class Main {
 
             System.out.println(groups.stream().filter(g -> g.size() > 1).count());
 //            groups.sort(Comparator.comparingInt(List::size));
-            for (List<String> group : groups) {
+            for (Set<String> group : groups) {
                 if (group.size() > 1) {
                     System.out.println(group);
                 }
