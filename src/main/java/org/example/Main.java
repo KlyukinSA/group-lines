@@ -65,11 +65,7 @@ public class Main {
                 return new String[0];
             }
         }
-        String[] rows = line.split(";");
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = rows[i].replaceAll("\"", "");
-        }
-        return rows;
+        return line.replaceAll("\"", "").split(";");
     }
 
     private static void apply(String[] newValues, int groupNumber, List<Map<String, Integer>> parts) {
