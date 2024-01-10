@@ -44,11 +44,14 @@ public class Main {
             }
             reader.close();
 
-            System.out.println(groups.stream().filter(g -> g.size() > 1).count());
-//            groups.sort(Comparator.comparingInt(List::size));
+            System.out.println("Групп размера больше 1: " + groups.stream().filter(s -> s.size() > 1).count());
+            groups.sort(Comparator.comparingInt(s -> -s.size()));
+            int i = 0;
             for (Set<String> group : groups) {
-                if (group.size() > 1) {
-                    System.out.println(group);
+                i++;
+                System.out.println("\nГруппа " + i);
+                for (String val : group) {
+                    System.out.println(val);
                 }
             }
         } catch (IOException e) {
