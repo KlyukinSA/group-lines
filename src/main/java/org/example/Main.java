@@ -69,19 +69,15 @@ public class Main {
     }
 
     private static void apply(String[] newValues, int groupNumber, List<Map<String, Integer>> parts) {
-        int j = 0;
-        for (; j < parts.size(); j++) {
-            if (j >= newValues.length) {
-                return;
+        for (int i = 0; i < newValues.length; i++) {
+            if (newValues[i].isEmpty()) {
+                continue;
             }
-            if (!newValues[j].isEmpty()) {
-                parts.get(j).put(newValues[j], groupNumber);
-            }
-        }
-        for (; j < newValues.length; j++) {
-            if (!newValues[j].isEmpty()) {
+            if (i < parts.size()) {
+                parts.get(i).put(newValues[i], groupNumber);
+            } else {
                 HashMap<String, Integer> map = new HashMap<>();
-                map.put(newValues[j], groupNumber);
+                map.put(newValues[i], groupNumber);
                 parts.add(map);
             }
         }
